@@ -22,6 +22,7 @@ function getResponseBodyObject() {
     let responseObject = {};
     responseObject.singleStates = [];
     responseObject.singleStates.push(getSingleStateObject(getTemperature));
+    responseObject.singleStates.push(getSingleStateObject(getMemory));
     responseObject.overallState = getOverallState(responseObject.singleStates);
     return responseObject;
 }
@@ -48,5 +49,11 @@ function getTemperature(){
     }
     const rounded = Math.ceil(Number(temperature));
     return ["temperature", rounded, rounded <= process.env.MAX_TEMPERATURE];
+}
+
+function getMemory(){
+    let memory = execSync("free | awk '/Mem/ {print $7}'").toString();
+    const memoryMB = Math.ceil(Number(memory) / 1024);
+    return ["memory", memoryMB, memoryMB >= process.env.MIN_MEMORY];
 }
 
