@@ -59,6 +59,7 @@ function getMemory(){
 }
 
 function getErrors(){
-    let errors = execSync("journalctl --since \"24 hours ago\" -p err..emerg | wc -l").toString();
-    return ["errors", errors, errors < process.env.MAX_ERRORS];
+    let errors = execSync("journalctl --since \"24 hours ago\" -p err..emerg | wc -l").toString().trim();
+    let errorsNumber = Number(errors);
+    return ["errors", errorsNumber, errorsNumber < process.env.MAX_ERRORS];
 }
