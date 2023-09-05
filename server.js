@@ -23,6 +23,7 @@ function getResponseBodyObject() {
     responseObject.singleStates = [];
     responseObject.singleStates.push(getSingleStateObject(getTemperature));
     responseObject.singleStates.push(getSingleStateObject(getMemory));
+    responseObject.singleStates.push(getSingleStateObject(getErrors));
     responseObject.overallState = getOverallState(responseObject.singleStates);
     return responseObject;
 }
@@ -57,3 +58,7 @@ function getMemory(){
     return ["memory", memoryMB, memoryMB >= process.env.MIN_MEMORY];
 }
 
+function getErrors(){
+    let errors = execSync("journalctl --since \"24 hours ago\" -p err..emerg | wc -l").toString();
+    return ["errors", errors, errors < process.env.MAX_ERRORS];
+}
